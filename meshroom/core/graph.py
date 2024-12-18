@@ -16,7 +16,7 @@ from meshroom.common import BaseObject, DictModel, Slot, Signal, Property
 from meshroom.core import Version
 from meshroom.core.attribute import Attribute, ListAttribute, GroupAttribute
 from meshroom.core.exception import GraphCompatibilityError, StopGraphVisit, StopBranchVisit
-from meshroom.core.node import nodeFactory, Status, Node, CompatibilityNode
+from meshroom.core.node import getPreferredNodeConstructor, nodeFactory, Status, Node, CompatibilityNode
 
 # Replace default encoder to support Enums
 
@@ -768,7 +768,11 @@ class Graph(BaseObject):
         if name and name in self._nodes.keys():
             name = self._createUniqueNodeName(name)
 
-        n = self.addNode(Node(nodeType, position=position, **kwargs), uniqueName=name)
+        # Get the Node Constructor which should be initialized for the given node type
+        # Node or Backdrop...
+        NodeType = getPreferredNodeConstructor(nodeType)
+
+        n = self.addNode(NodeType(nodeType, position=position, **kwargs), uniqueName=name)
         n.updateInternals()
         return n
 
