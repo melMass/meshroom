@@ -1943,6 +1943,20 @@ class CompatibilityNode(BaseNode):
     issueDetails = Property(str, issueDetails.fget, constant=True)
 
 
+def getPreferredNodeConstructor(nodeType: str, default: Type[BaseNode]=Node):
+    """ Returns a Node Constructor to initialize Node.
+
+    Args:
+        nodeType: Node Plugin/Descriptor name.
+        default: The Default Node constructor if the nodeType does not have a constructor defined.
+    """
+    constructors = {
+            "Backdrop": Backdrop,
+        }
+
+    return constructors.get(nodeType, default)
+
+
 def nodeFactory(nodeDict, name=None, template=False, uidConflict=False):
     """
     Create a node instance by deserializing the given node data.
@@ -2036,7 +2050,8 @@ def nodeFactory(nodeDict, name=None, template=False, uidConflict=False):
                     break
 
     if compatibilityIssue is None:
-        node = Node(nodeType, position, uid=uid, **inputs, **internalInputs, **outputs)
+        NodeType = getPreferredNodeConstructor(nodeType)
+        node = NodeType(nodeType, position, uid=uid, **inputs, **internalInputs, **outputs)
     else:
         logging.debug("Compatibility issue detected for node '{}': {}".format(name, compatibilityIssue.name))
         node = CompatibilityNode(nodeType, nodeDict, position, compatibilityIssue)
