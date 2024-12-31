@@ -33,17 +33,17 @@ Item {
             font.pointSize: 13
             padding: 0
             text: ""
-            color: labelIconColor
+            color: control.labelIconColor
         }
         Label {
             id: labelItem
             text: ""
-            color: labelIconColor
-            width: labelWidth
+            color: control.labelIconColor
+            width: control.labelWidth
 
             onWidthChanged: {
-                if (labelWidth != undefined && width != labelWidth)
-                    width = labelWidth
+                if (control.labelWidth != undefined && width != control.labelWidth)
+                    width = control.labelWidth
             }
         }
     }
