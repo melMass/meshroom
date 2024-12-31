@@ -16,9 +16,14 @@ Item {
     property alias labelIconRow: contentRow
     property var labelIconColor: palette.text
     property alias labelIconMouseArea: mouseArea
+    property var labelWidth: undefined
     implicitWidth: childrenRect.width
     implicitHeight: childrenRect.height
     anchors.rightMargin: 5
+
+    onLabelWidthChanged: {
+        labelItem.width = labelWidth
+    }
 
     RowLayout {
         id: contentRow
@@ -34,6 +39,12 @@ Item {
             id: labelItem
             text: ""
             color: labelIconColor
+            width: labelWidth
+
+            onWidthChanged: {
+                if (labelWidth != undefined && width != labelWidth)
+                    width = labelWidth
+            }
         }
     }
 
