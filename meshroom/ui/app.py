@@ -394,8 +394,15 @@ class MeshroomApp(QApplication):
         available.
         """
         if not self._updatedRecentProjectFilesThumbnails:
-            self._recentProjectFiles = self._getRecentProjectFiles()
+            self._updateRecentProjectFilesThumbnails()
             self._updatedRecentProjectFilesThumbnails = True
+
+    def _updateRecentProjectFilesThumbnails(self) -> None:
+        projects = self._recentProjectFiles
+        for project in projects:
+            path = project["path"]
+            project["thumbnail"] = self._retrieveThumbnailPath(path)
+        self._recentProjectFiles = projects
 
     @Slot(str)
     @Slot(QUrl)
