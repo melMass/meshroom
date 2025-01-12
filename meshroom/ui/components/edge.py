@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal, Property, QPointF, Qt, QObject
+from PySide6.QtCore import Signal, Property, QPointF, Qt, QObject, Slot, QRectF
 from PySide6.QtGui import QPainterPath, QVector2D
 from PySide6.QtQuick import QQuickItem
 
@@ -17,7 +17,7 @@ class MouseEvent(QObject):
     x = Property(float, lambda self: self._x, constant=True)
     y = Property(float, lambda self: self._y, constant=True)
     button = Property(Qt.MouseButton, lambda self: self._button, constant=True)
-    modifiers = Property(int, lambda self: self._modifiers, constant=True)
+    modifiers = Property(Qt.KeyboardModifier, lambda self: self._modifiers, constant=True)
 
 
 class EdgeMouseArea(QQuickItem):
