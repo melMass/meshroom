@@ -1114,7 +1114,14 @@ class UIGraph(QObject):
         """
         if not self._nodeSelection.hasSelection():
             return ""
-        serializedSelection = {node.name: node.toDict() for node in self.iterSelectedNodes()}
+
+        serializedSelection = {}
+        for node in self.iterSelectedNodes():
+            if node.hasChildren():
+                for child in node.childNodes:
+                    serializedSelection[child.name] = child.toDict()
+            serializedSelection[node.name] = node.toDict()
+
         return json.dumps(serializedSelection, indent=4)
 
     @Slot(str, QPoint, bool, result=list)
