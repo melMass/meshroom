@@ -1956,18 +1956,26 @@ class CompatibilityNode(BaseNode):
     issueDetails = Property(str, issueDetails.fget, constant=True)
 
 
-def getPreferredNodeConstructor(nodeType: str, default: Type[BaseNode]=Node):
-    """ Returns a Node Constructor to initialize Node.
+def createNode(nodeType: str, position: Position=None, **kwargs) -> BaseNode:
+    """ Create a new Node instance based on the given node description.
+        Any other keyword argument will be used to initialize this node's attributes.
 
     Args:
         nodeType: Node Plugin/Descriptor name.
-        default: The Default Node constructor if the nodeType does not have a constructor defined.
+        position: Node Position.
+        parent (BaseObject): this Node's parent
+        **kwargs: attributes values
+    
+    Returns:
+        The created node.
     """
     constructors = {
             "Backdrop": Backdrop,
         }
+    # Node constructor based on the nodeType
+    constructor = constructors.get(nodeType, Node)
 
-    return constructors.get(nodeType, default)
+    return constructor(nodeType, position=position, **kwargs)
 
 
 def nodeFactory(nodeDict, name=None, template=False, uidConflict=False):
@@ -2063,8 +2071,7 @@ def nodeFactory(nodeDict, name=None, template=False, uidConflict=False):
                     break
 
     if compatibilityIssue is None:
-        NodeType = getPreferredNodeConstructor(nodeType)
-        node = NodeType(nodeType, position, uid=uid, **inputs, **internalInputs, **outputs)
+        node = createNode(nodeType, position, uid=uid, **inputs, **internalInputs, **outputs)
     else:
         logging.debug("Compatibility issue detected for node '{}': {}".format(name, compatibilityIssue.name))
         node = CompatibilityNode(nodeType, nodeDict, position, compatibilityIssue)
