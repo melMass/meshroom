@@ -29,7 +29,7 @@ Item {
     property var children: []
 
     property bool dragging: mouseArea.drag.active
-    property bool resizing: leftDragger.drag.active
+    property bool resizing: leftDragger.drag.active || topDragger.drag.active
     /// Combined x and y
     property point position: Qt.point(x, y)
     /// Styling
@@ -272,6 +272,47 @@ Item {
                 onReleased: {
                     // emit the width and height for it to be updated
                     root.resized(mouseArea.width, root.height);
+                }
+            }
+        }
+
+        ///
+        /// Resize Top
+        ///
+        Rectangle {
+            width: mouseArea.width
+            height: 4
+            
+            color: baseColor
+            opacity: 0
+
+            anchors.verticalCenter: parent.top
+
+            MouseArea {
+                id: topDragger
+
+                cursorShape: Qt.SizeVerCursor
+                anchors.fill: parent
+
+                drag{ target: parent; axis: Drag.YAxis }
+
+                onMouseYChanged: {
+                    if (drag.active) {
+                        let h = root.height - mouseY;
+
+                        // Ensure a minimum height
+                        if (h > root.minumumHeight) {
+                            // Update the node's y position and the height
+                            root.y = root.y + mouseY;
+                            root.height = h;
+                        }
+                    }
+                }
+
+                onReleased: {
+                    // emit the node width and height along with the root position
+                    // Dragging from the top moves the node as well
+                    root.resizedAndMoved(root.width, root.height, Qt.point(root.x, root.y));
                 }
             }
         }
