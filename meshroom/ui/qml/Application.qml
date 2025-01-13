@@ -626,6 +626,8 @@ Page {
         }
         MenuBar {
             palette.window: Qt.darker(activePalette.window, 1.15)
+            font.pointSize: 10
+            Layout.fillHeight: true
             Menu {
                 title: "File"
                 Action {
