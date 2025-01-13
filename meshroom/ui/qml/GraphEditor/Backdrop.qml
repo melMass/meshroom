@@ -103,6 +103,7 @@ Item {
     }
 
     function updateChildren() {
+        let delegates = [];
         let nodes = [];
         const backdropRect = Qt.rect(root.node.x, root.node.y, root.node.nodeWidth, root.node.nodeHeight);
 
@@ -113,10 +114,15 @@ Item {
 
             const delegateRect = Qt.rect(delegate.x, delegate.y, delegate.width, delegate.height);
             if (Geom2D.rectRectFullIntersect(backdropRect, delegateRect)) {
-                nodes.push(delegate);
+                delegates.push(delegate);
+                nodes.push(delegate.node);
             }
         }
-        children = nodes
+        children = delegates;
+
+        // Update children for the underlying node
+        // This could get used in other operations like copy-paste and maybe getters if needed
+        root.node.updateChildren(nodes);
     }
 
     function getChildrenNodes() {
