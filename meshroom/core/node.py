@@ -517,6 +517,7 @@ class BaseNode(BaseObject):
         self._locked = False
         self._duplicates = ListModel(parent=self)  # list of nodes with the same uid
         self._hasDuplicates = False
+        self._childNodes = ListModel(parent=self)   # List of nodes which are children of the given node
 
         self.globalStatusChanged.connect(self.updateDuplicatesStatusAndLocked)
 
@@ -1359,6 +1360,16 @@ class BaseNode(BaseObject):
             self._hasDuplicates = bool(len(newList))
             self.hasDuplicatesChanged.emit()
 
+    @Slot(list)
+    def updateChildren(self, nodes):
+        """ Update the list of nodes which are child to the current node (Case of Backdrop and Group). """
+        self._childNodes.clear()
+        self._childNodes.setObjectList(nodes)
+    
+    def hasChildren(self) -> bool:
+        """ Returns True if the given node has child nodes. """
+        return bool(self._childNodes)
+
     def statusInThisSession(self):
         if not self._chunks:
             return False
@@ -1431,6 +1442,8 @@ class BaseNode(BaseObject):
     invalidation = Property(str, getInvalidationMessage, notify=internalAttributesChanged)
     comment = Property(str, getComment, notify=internalAttributesChanged)
     fontSize = Property(int, getFontSize, notify=internalAttributesChanged)
+
+    childNodes = Property(Variant, lambda self: self._childNodes, constant=True)
 
     # Node Dimensions
     nodeWidth = Property(float, getNodeWidth, notify=internalAttributesChanged)
