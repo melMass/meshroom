@@ -1129,11 +1129,11 @@ Item {
                             }
 
                             Behavior on x {
-                                enabled:  !nodeRepeater.ongoingDrag && !resizing && !uigraph.animationsDisabled;
+                                enabled: !nodeRepeater.ongoingDrag && !resizing && !uigraph.animationsDisabled;
                                 NumberAnimation { duration: 100 }
                             }
                             Behavior on y {
-                                enabled: !nodeRepeater.ongoingDrag
+                                enabled: !nodeRepeater.ongoingDrag && !resizing && !uigraph.animationsDisabled;
                                 NumberAnimation { duration: 100 }
                             }
                         }
